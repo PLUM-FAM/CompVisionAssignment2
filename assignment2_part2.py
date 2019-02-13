@@ -62,7 +62,7 @@ while True:
         ret1, result = cv2.threshold(result, 100,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
         #countour
-        
+
 
 
         #refresh all windows
