@@ -15,17 +15,13 @@ def increase_brightness(src, value):
     return src
 
 
-#global window height and width for every drawn video window.
-windowHeight = 500
-windowWidth = 800
-
 #capture camera and create windows
 cap = cv2.VideoCapture(0)
 cv2.namedWindow("normal",0)
 #cv2.namedWindow("gray",0)
-cv2.namedWindow("threechannel",0)
-cv2.namedWindow("image1",0)
-cv2.namedWindow("absDiff",0)
+# cv2.namedWindow("threechannel",0)
+# cv2.namedWindow("image1",0)
+# cv2.namedWindow("absDiff",0)
 
 status, img = cap.read()
 average = numpy.float32(img)
@@ -41,6 +37,7 @@ while True:
         
         #5x5 mask blur image
         result = cv2.blur(result, (5,5))
+        #result = cv2.GaussianBlur(result,(5,5),0)
 
         #accumulateWeighted (take running average)
         cv2.accumulateWeighted(result,average,0.1)
@@ -53,17 +50,41 @@ while True:
         result = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
 
         #threshold the grayscale with low number
-        ret1, result = cv2.threshold(result, 0,100, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        # logan - best threshold 0, 100 
+        ret1, result = cv2.threshold(result, 10,50, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
         #blur again
         result = cv2.blur(result,(5,5))
+        #result = cv2.GaussianBlur(result,(5,5),0)
+
         
         #threshold again
-        ret1, result = cv2.threshold(result, 100,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        # Logan - best threshhold 120 - 255
+        ret1, result = cv2.threshold(result, 200,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-        #countours
-        contours = cv2.findContours(result.copy(),cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
-        cv2.drawContours(result, contours, -1, (0,255,0), 3)
+
+        #erode and dialate to eliminate noise
+        kernel = numpy.ones((5,5),numpy.uint8)
+        #result = cv2.erode(result,kernel,iterations = 1)
+        #result = cv2.dilate(result,kernel,iterations = 1)
+
+
+        #contours
+        contours = cv2.findContours(result, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
+        # print(len(contours))
+        for c in contours:
+                #logan best at 9000
+            if(cv2.contourArea(c) > 5000):
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+
+
+        #cv2.drawContours(result, contours, -1, (0,255,0), 3)
+
+       
+
+
 
 
         #refresh all windows
