@@ -61,8 +61,9 @@ while True:
         #threshold again
         ret1, result = cv2.threshold(result, 100,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-        #countour
-
+        #countours
+        contours = cv2.findContours(result.copy(),cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)[0]
+        cv2.drawContours(result, contours, -1, (0,255,0), 3)
 
 
         #refresh all windows
