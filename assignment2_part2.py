@@ -1,7 +1,7 @@
 import numpy
 import cv2
 
-#helper function to increase brightness of a single frame
+# helper function to increase brightness of a single frame
 def increase_brightness(src, value):
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
@@ -53,14 +53,13 @@ while True:
 
         #threshold again
         ret1, result = cv2.threshold(result, 110,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-   
-
 
         #contours
         contours = cv2.findContours(result, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
-        # print(len(contours))
+        
         for c in contours:
-            if(cv2.contourArea(c) > 7500): # if the area is larger than 7500 then draw the rectange for that group
+            #if the area is larger than 7500 then draw the rectangle for that group
+            if(cv2.contourArea(c) > 7500): 
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
@@ -68,11 +67,11 @@ while True:
         #refresh all windows
         cv2.resizeWindow('normal', 900, 900)
         cv2.imshow("normal", img)
-        cv2.imshow("img1",result)
+        cv2.imshow("test",result)
         #cv2.imshow("threechannel", threeChannel)
 
 
-        #exit with escape key
+        #exit with escape key (kill program)
         k = cv2.waitKey(1)
         if k == 27:
                 break
