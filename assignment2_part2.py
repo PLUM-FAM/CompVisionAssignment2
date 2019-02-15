@@ -1,7 +1,7 @@
 import numpy
 import cv2
 
-#helper function to increase frame brightness
+#helper function to increase brightness of a single frame
 def increase_brightness(src, value):
     hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
@@ -18,10 +18,7 @@ def increase_brightness(src, value):
 #capture camera and create windows
 cap = cv2.VideoCapture(0)
 cv2.namedWindow("normal",0)
-#cv2.namedWindow("gray",0)
-# cv2.namedWindow("threechannel",0)
-# cv2.namedWindow("image1",0)
-# cv2.namedWindow("absDiff",0)
+#cv2.namedWindow("threechannel",0)
 
 status, img = cap.read()
 average = numpy.float32(img)
@@ -35,7 +32,7 @@ while True:
         #brighten the image slightly
         result = increase_brightness(img,50)
         
-        #5x5 mask blur image
+        #5x5 mask blur image 5x5 mask
         result = cv2.blur(result, (5,5))
 
         #accumulateWeighted (take running average)
@@ -49,15 +46,12 @@ while True:
         result = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
 
         #threshold the grayscale with low number
-        # logan - best threshold 0, 100 
         ret1, result = cv2.threshold(result, 10,90, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-        #blur again
+        #blur again 5x5 mask
         result = cv2.blur(result,(5,5))
 
-        
         #threshold again
-        # Logan - best threshhold 120 - 255
         ret1, result = cv2.threshold(result, 110,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
    
 
@@ -66,8 +60,7 @@ while True:
         contours = cv2.findContours(result, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[0]
         # print(len(contours))
         for c in contours:
-                #logan best at 9000
-            if(cv2.contourArea(c) > 7500):
+            if(cv2.contourArea(c) > 7500): # if the area is larger than 7500 then draw the rectange for that group
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
@@ -75,9 +68,7 @@ while True:
         #refresh all windows
         cv2.resizeWindow('normal', 900, 900)
         cv2.imshow("normal", img)
-        #cv2.imshow("grayscale",gray)
         cv2.imshow("img1",result)
-        #cv2.imshow("absdiff", absdiff)
         #cv2.imshow("threechannel", threeChannel)
 
 
