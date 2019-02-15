@@ -1,3 +1,11 @@
+# ----------------------------------------
+#                                        |
+# CSCI 442 - Assignment 2 (Part 2)       |
+# 02/15/2019                             |
+# Written by Logan Davis & Joel Lechman  |
+#                                        |
+# ----------------------------------------
+
 import numpy
 import cv2
 
