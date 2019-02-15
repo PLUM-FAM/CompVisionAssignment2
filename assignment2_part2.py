@@ -33,14 +33,13 @@ while True:
         threeChannel = numpy.float32(img/255)
 
         #brighten the image slightly
-        result = increase_brightness(img,30)
+        result = increase_brightness(img,50)
         
         #5x5 mask blur image
         result = cv2.blur(result, (5,5))
-        #result = cv2.GaussianBlur(result,(5,5),0)
 
         #accumulateWeighted (take running average)
-        cv2.accumulateWeighted(result,average,0.1)
+        cv2.accumulateWeighted(result,average,0.01)
         result = cv2.convertScaleAbs(average)
 
         #take difference
@@ -51,22 +50,16 @@ while True:
 
         #threshold the grayscale with low number
         # logan - best threshold 0, 100 
-        ret1, result = cv2.threshold(result, 10,50, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        ret1, result = cv2.threshold(result, 10,90, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
         #blur again
         result = cv2.blur(result,(5,5))
-        #result = cv2.GaussianBlur(result,(5,5),0)
 
         
         #threshold again
         # Logan - best threshhold 120 - 255
-        ret1, result = cv2.threshold(result, 200,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-
-
-        #erode and dialate to eliminate noise
-        kernel = numpy.ones((5,5),numpy.uint8)
-        #result = cv2.erode(result,kernel,iterations = 1)
-        #result = cv2.dilate(result,kernel,iterations = 1)
+        ret1, result = cv2.threshold(result, 110,255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+   
 
 
         #contours
@@ -74,20 +67,13 @@ while True:
         # print(len(contours))
         for c in contours:
                 #logan best at 9000
-            if(cv2.contourArea(c) > 5000):
+            if(cv2.contourArea(c) > 7500):
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 
-
-        #cv2.drawContours(result, contours, -1, (0,255,0), 3)
-
-       
-
-
-
-
         #refresh all windows
+        cv2.resizeWindow('normal', 900, 900)
         cv2.imshow("normal", img)
         #cv2.imshow("grayscale",gray)
         cv2.imshow("img1",result)
