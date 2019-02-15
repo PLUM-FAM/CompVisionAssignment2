@@ -63,7 +63,7 @@ while True:
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
         #display hsv window
-        cv2.imshow("hsv", hsv);
+        cv2.imshow("hsv", hsv)
 
         #on click on hsv window, call onClick function
         cv2.setMouseCallback('hsv',onClick)
